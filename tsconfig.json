@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "sourceMap": true
+  },
+  "include": ["src", "environment.d.ts", "api"],
+  "exclude": [".yarn/*", "node_modules"]
+}

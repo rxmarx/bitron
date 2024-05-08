@@ -1,0 +1,126 @@
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String           @id
+  username           String
+  bits               Decimal          @default(0)
+  commandsRan        Int              @default(0)
+  createdAt          DateTime         @default(now())
+  company            Company?         @relation(name: "UserToCompany")
+  partneredCompanies Company[]        @relation(name: "CompanyToUser")
+  createdTokens      Token[]          @relation(name: "UserToToken")
+  purchasedTokens    Token[]          @relation(name: "UserToToken1")
+  shares             Shares[]         @relation(name: "UserToShares")
+  bank               Bank?            @relation(name: "UserToBank")
+  premiumCommands    PremiumCommand[] @relation(name: "UserToPremiumCommand")
+  job                Job?
+  boughtItems        Item[]           @relation(name: "UserToItem")
+}
+
+model Company {
+  id             String  @id
+  owner          User    @relation(name: "UserToCompany", fields: [ownerId], references: [id])
+  ownerId        String  @unique
+  partners       User[]  @relation(name: "CompanyToUser")
+  shares         Shares? @relation(name: "CompanyToShares")
+  acquiredTokens Token[] @relation(name: "TokenToCompany")
+}
+
+model Token {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String   @db.String(255)
+  description     String   @db.String(255)
+  level           Int      @default(0)
+  sales           Int      @default(0)
+  price           Decimal  @default(0)
+  salesPerUpgrade Int      @default(0)
+  creator         User     @relation(name: "UserToToken", fields: [creatorId], references: [id])
+  creatorId       String
+  buyers          User[]   @relation(name: "UserToToken1")
+  acquirerId      String?
+  acquirer        Company? @relation(name: "TokenToCompany", fields: [acquirerId], references: [id])
+  bank            Bank[]   @relation(name: "TokenToBank")
+}
+
+model Shares {
+  id        Int      @id @default(sequence())
+  company   Company? @relation(name: "CompanyToShares", fields: [companyId], references: [id])
+  companyId String?  @unique
+  count     Int      @default(0)
+  value     Decimal  @default(0)
+  holders   User[]   @relation(name: "UserToShares")
+  bank      Bank[]   @relation(name: "SharesToBank")
+}
+
+model Bank {
+  id           String   @id
+  level        Int      @default(0)
+  deposit      Decimal  @default(0)
+  user         User     @relation(name: "UserToBank", fields: [userId], references: [id])
+  userId       String   @unique
+  storedTokens Token[]  @relation(name: "TokenToBank")
+  shares       Shares[] @relation(name: "SharesToBank")
+}
+
+model PremiumCommand {
+  id   Int     @id @default(sequence())
+  name String  @unique
+  cost Decimal
+  user User[]  @relation(name: "UserToPremiumCommand")
+}
+
+model Guild {
+  id             String  @id
+  ownerId        String
+  prefix         String
+  music          Boolean @default(false)
+  voiceChannelId String?
+  musicChannelId String?
+}
+
+model Item {
+  id          Int      @id @unique @default(sequence())
+  name        String   @db.String(255)
+  description String   @db.String(255)
+  cost        Decimal  @default(0)
+  stealable   Boolean  @default(true)
+  category    Category
+  users       User[]   @relation(name: "UserToItem")
+  count       Int      @default(0)
+  powerup     PowerUp? @relation(name: "PowerUpToItem", fields: [powerupId], references: [id])
+  powerupId   Int?     @unique
+}
+
+model PowerUp {
+  id    Int    @id @unique @default(sequence())
+  name  String @unique
+  level Int    @default(0)
+  item  Item?  @relation(name: "PowerUpToItem")
+}
+
+enum Job {
+  POLICE
+  SOFTWARE_ENGINEER
+  DATA_SCIENTIST
+  DISCORD_BOT_DEVELOPER
+  YOUTUBER
+  DOCTOR
+  SCIENTIST
+  LAWYER
+  ENGINEER
+  ARCHITECT
+  SOLDIER
+}
+
+enum Category {
+  COLLECTIBLE
+  POWERUP
+  CHEST
+}
