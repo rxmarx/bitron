@@ -49,7 +49,7 @@ class BankAPI {
         url: `${this.client.config.serverUrl}/bank`,
         data: req,
       })
-        .then((res) => resolve(res.data as Bank))
+        .then((res) => resolve(res.data))
         .catch((error) => reject(error));
     });
   }

@@ -47,7 +47,7 @@ class TokenAPI {
         url: `${this.client.config.serverUrl}/token`,
         data: req,
       })
-        .then((res) => resolve(res.data as Token))
+        .then((res) => resolve(res.data))
         .catch((error) => reject(error));
     });
   }

@@ -51,7 +51,7 @@ class UserAPI {
         url: `${this.client.config.serverUrl}/user`,
         data: req,
       })
-        .then((res) => resolve(res.data as User))
+        .then((res) => resolve(res.data))
         .catch((error) => reject(error));
     });
   }

@@ -47,7 +47,7 @@ class CompanyAPI {
         url: `${this.client.config.serverUrl}/company`,
         data: req,
       })
-        .then((res) => resolve(res.data as Company))
+        .then((res) => resolve(res.data))
         .catch((error) => reject(error));
     });
   }

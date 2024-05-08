@@ -14,6 +14,7 @@ import {
   guildRoute,
   itemRoute,
   premiumCommandRoute,
+  sharesRoute,
   tokenRoute,
   userRoute,
 } from "./routes";
@@ -55,6 +56,7 @@ class Server {
       `/${Server.client.config.serverApi}/api/company`,
       companyRoute
     );
+    this.app.use(`${Server.client.config.serverApi}/api/shares`, sharesRoute);
     this.app.use(
       `/${Server.client.config.serverApi}/api/premiumCommand`,
       premiumCommandRoute
