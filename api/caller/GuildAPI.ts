@@ -16,7 +16,7 @@ class GuildAPI {
     this.client = client;
   }
 
-  public create(req: CreateGuild): Promise<void> {
+  public create(req: CreateGuild): Promise<Guild | string> {
     return new Promise<Guild | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -28,7 +28,7 @@ class GuildAPI {
     });
   }
 
-  public get(req: GetGuild): Promise<void> {
+  public get(req: GetGuild): Promise<Guild | string> {
     return new Promise<Guild | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -40,7 +40,7 @@ class GuildAPI {
     });
   }
 
-  public delete(req: DeleteGuild): Promise<void> {
+  public delete(req: DeleteGuild): Promise<Guild | string> {
     return new Promise<Guild | any>((resolve, reject) => {
       axios({
         method: "DELETE",
@@ -52,7 +52,7 @@ class GuildAPI {
     });
   }
 
-  public updateInfo(req: UpdateGuildInfo): Promise<void> {
+  public updateInfo(req: UpdateGuildInfo): Promise<Guild | string> {
     return new Promise<Guild | any>((resolve, reject) => {
       axios({
         method: "PUT",

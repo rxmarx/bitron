@@ -4,6 +4,7 @@ import MathGenericCommand from "./generic/util/MathGenericCommand";
 import MathSlashCommand from "./slash/util/MathSlashCommand";
 import PingGenericCommand from "./generic/info/PingGenericCommand";
 import PingSlashCommand from "./slash/info/PingSlashCommand";
+import ProfileGenericCommand from "./generic/economy/ProfileGenericCommand";
 import PurgeGenericCommand from "./generic/moderation/PurgeGenericCommand";
 import PurgeSlashCommand from "./slash/moderation/PurgeSlashCommand";
 import WikipediaGenericCommand from "./generic/util/WikipediaGenericCommand";
@@ -15,6 +16,7 @@ export const Generic = {
   WikipediaGenericCommand,
   PurgeGenericCommand,
   MathGenericCommand,
+  ProfileGenericCommand,
 };
 
 export const Slash = {
@@ -31,6 +33,7 @@ export {
   WikipediaGenericCommand,
   PurgeGenericCommand,
   MathGenericCommand,
+  ProfileGenericCommand,
   PingSlashCommand,
   GiphySlashCommand,
   WikipediaSlashCommand,

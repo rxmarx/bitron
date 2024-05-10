@@ -18,6 +18,7 @@ class WikipediaGenericCommand extends GenericCommand {
       userPermissions: ["SendMessages", "EmbedLinks"],
       ownerOnly: false,
       emoji: "🌐",
+      premiumCommand: false,
     });
   }
 

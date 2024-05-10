@@ -20,7 +20,7 @@ class UserAPI {
     this.client = client;
   }
 
-  public create(req: CreateUser): Promise<void> {
+  public create(req: CreateUser): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -32,7 +32,7 @@ class UserAPI {
     });
   }
 
-  public get(req: GetUser): Promise<void> {
+  public get(req: GetUser): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -44,7 +44,7 @@ class UserAPI {
     });
   }
 
-  public delete(req: DeleteUser): Promise<void> {
+  public delete(req: DeleteUser): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "DELETE",
@@ -56,7 +56,7 @@ class UserAPI {
     });
   }
 
-  public updateInfo(req: UpdateUserInfo): Promise<void> {
+  public updateInfo(req: UpdateUserInfo): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -68,7 +68,9 @@ class UserAPI {
     });
   }
 
-  public updatePurchasedTokens(req: UpdateUserPurchasedTokens): Promise<void> {
+  public updatePurchasedTokens(
+    req: UpdateUserPurchasedTokens
+  ): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -82,7 +84,7 @@ class UserAPI {
 
   public updatePartneredCompanies(
     req: UpdateUserPartneredCompanies
-  ): Promise<void> {
+  ): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -94,7 +96,7 @@ class UserAPI {
     });
   }
 
-  public updateShares(req: UpdateUserShares): Promise<void> {
+  public updateShares(req: UpdateUserShares): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -106,7 +108,7 @@ class UserAPI {
     });
   }
 
-  public updateBoughtItems(req: UpdateUserBoughtItems): Promise<void> {
+  public updateBoughtItems(req: UpdateUserBoughtItems): Promise<User | string> {
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",

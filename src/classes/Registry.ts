@@ -50,6 +50,18 @@ class Registry {
   private registerGenericCommandsCollector(commands: GenericCommand[]): this {
     for (const command of commands) {
       this.registerGenericCommand(command);
+
+      if (command.premiumCommand) {
+        this.client.server.caller.command
+          .get({ name: command.name })
+          .then((pc) => {
+            if (!(typeof pc === "string")) return;
+            this.client.server.caller.command.create({
+              name: command.name,
+              cost: command.cost,
+            });
+          });
+      }
     }
 
     return this;
@@ -98,9 +110,9 @@ class Registry {
     this.client.on("ready", (client: Client) =>
       GenericEvents.onReady(client as ExtendedClient)
     );
-    this.client.on("guildCreate", (guild: Guild) =>
-      GenericEvents.guildCreate(guild, this.client)
-    );
+    // this.client.on("guildCreate", (guild: Guild) =>
+    //   GenericEvents.guildCreate(guild, this.client)
+    // );
 
     this.registerMessageHandler().registerInteractionHandler();
     this.registerMiscellaneousEvents();

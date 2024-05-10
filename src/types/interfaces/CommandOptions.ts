@@ -11,4 +11,6 @@ export interface CommandOptions {
   ownerOnly: boolean;
   userPermissions: PermissionResolvable[];
   clientPermissions: PermissionResolvable[];
+  premiumCommand: boolean;
+  cost?: number;
 }

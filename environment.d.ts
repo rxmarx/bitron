@@ -18,6 +18,7 @@ declare global {
       OPENAI_ORG: string;
       OPENAI_KEY: string;
       CACHE_URL: string;
+      CACHE_TOKEN: string;
       SERVER_API: string;
       SERVER_URL: string;
     }

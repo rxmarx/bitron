@@ -18,6 +18,7 @@ class MathGenericCommand extends GenericCommand {
       userPermissions: ["SendMessages"],
       ownerOnly: false,
       emoji: "➕",
+      premiumCommand: false,
     });
   }
 

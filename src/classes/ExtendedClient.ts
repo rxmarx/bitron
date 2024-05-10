@@ -54,7 +54,6 @@ export class ExtendedClient extends Client {
   public readonly config: ConfigProvider;
   public readonly registry: Registry;
   public readonly deployer: SlashCommandDeployer;
-  public readonly database: PrismaClient;
   public readonly server: Server;
 
   constructor() {
@@ -72,33 +71,34 @@ export class ExtendedClient extends Client {
     this.config = new ConfigProvider(this);
     this.registry = new Registry(this);
     this.deployer = new SlashCommandDeployer(this);
-    this.database = new PrismaClient();
     this.server = new Server(this);
 
     this.registry.registerEvents();
   }
 
   public async start(): Promise<void> {
-    // this.registry.registerAllCommands();
-    // this.deployer.deployToDevGuild();
-    this.main();
-    //   .then(async () => {
-    //     await this.database.$disconnect();
-    //   })
-    //   .catch(async (error) => {
-    //     console.log(error);
-    //     await this.database.$disconnect();
-    //     this.emit("databaseError", error, this);
-    //   });
-    // await this.login(this.config.token);
+    this.registry.registerAllCommands();
+    this.deployer.deployToDevGuild();
+
     this.server.init();
 
-    this.server.caller.token
-      .get({ uuid: "a4f038d6-595f-4ef1-a55b-1ad3384fcbe5" })
-      .then((value) => {
-        console.log(value);
+    this.main()
+      .then(async () => {
+        await Server.database.$connect();
       })
-      .catch((error) => console.log(error));
+      .catch(async (error) => {
+        console.log(error);
+        await Server.database.$disconnect();
+        this.emit("databaseError", error, this);
+      });
+    await this.login(this.config.token);
+
+    // this.server.caller.token
+    //   .get({ uuid: "a4f038d6-595f-4ef1-a55b-1ad3384fcbe5" })
+    //   .then((value) => {
+    //     console.log(value);
+    //   })
+    //   .catch((error) => console.log(error));
   }
 
   public async main(): Promise<void> {

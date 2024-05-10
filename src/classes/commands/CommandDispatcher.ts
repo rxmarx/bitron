@@ -20,13 +20,7 @@ class CommandDispatcher {
   }
 
   public async handleMessage(message: Message): Promise<void> {
-    const guild = await this.client.database.guild.findUnique({
-      where: {
-        id: message.guild!.id,
-      },
-    });
-
-    const prefix: string = String(guild!.prefix)[0];
+    const prefix: string = this.client.config.prefix;
 
     if (
       message.partial ||
@@ -57,6 +51,32 @@ class CommandDispatcher {
 
     if (!(command instanceof GenericCommand) || !message.guild) {
       return;
+    }
+
+    if (command.premiumCommand) {
+      const premCommand = await this.client.server.caller.command.get({
+        name: command.name,
+      });
+
+      if (typeof premCommand === "string") return;
+
+      if (!premCommand.user?.length) {
+        message.channel.send(
+          `${command.name} is not owned by anyone, be the first one to buy it`
+        );
+        return;
+      }
+
+      const hasUser = premCommand.user.filter(
+        (user) => user.id === message.author.id
+      );
+
+      if (hasUser.length === 0) {
+        message.channel.send(
+          `${command.name} is a premium command, and can be run only after you bought it`
+        );
+        return;
+      }
     }
 
     try {
@@ -128,6 +148,32 @@ class CommandDispatcher {
       !interaction.inGuild()
     ) {
       return;
+    }
+
+    if (command.premiumCommand) {
+      const premCommand = await this.client.server.caller.command.get({
+        name: command.name,
+      });
+
+      if (typeof premCommand === "string") return;
+
+      if (!premCommand.user?.length) {
+        interaction.reply(
+          `${command.name} is not owned by anyone, be the first one to buy it`
+        );
+        return;
+      }
+
+      const hasUser = premCommand.user.filter(
+        (user) => user.id === interaction.user.id
+      );
+
+      if (hasUser.length === 0) {
+        interaction.reply(
+          `${command.name} is a premium command, and can be run only after you bought it`
+        );
+        return;
+      }
     }
 
     try {

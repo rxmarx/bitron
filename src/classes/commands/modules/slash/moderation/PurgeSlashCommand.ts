@@ -27,6 +27,7 @@ class PurgeSlashCommand extends SlashCommand {
           .setMaxValue(100)
       ),
       emoji: "🧹",
+      premiumCommand: false,
     });
   }
 

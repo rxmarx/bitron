@@ -16,7 +16,7 @@ class CompanyAPI {
     this.client = client;
   }
 
-  public create(req: CreateCompany): Promise<void> {
+  public create(req: CreateCompany): Promise<Company | string> {
     return new Promise<Company | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -28,7 +28,7 @@ class CompanyAPI {
     });
   }
 
-  public get(req: GetCompany): Promise<void> {
+  public get(req: GetCompany): Promise<Company | string> {
     return new Promise<Company | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -40,7 +40,7 @@ class CompanyAPI {
     });
   }
 
-  public delete(req: DeleteCompany): Promise<void> {
+  public delete(req: DeleteCompany): Promise<Company | string> {
     return new Promise<Company | any>((resolve, reject) => {
       axios({
         method: "DELETE",
@@ -52,7 +52,9 @@ class CompanyAPI {
     });
   }
 
-  public updateAcquiredTokens(req: UpdateCompanyAcquiredTokens): Promise<void> {
+  public updateAcquiredTokens(
+    req: UpdateCompanyAcquiredTokens
+  ): Promise<Company | string> {
     return new Promise<Company | any>((resolve, reject) => {
       axios({
         method: "PUT",

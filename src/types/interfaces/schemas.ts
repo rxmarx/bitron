@@ -56,7 +56,7 @@ interface Shares {
 }
 
 interface PremiumCommand {
-  id: number;
+  id?: number;
   name: string;
   cost?: number;
   user?: User[];

@@ -20,6 +20,7 @@ class PurgeGenericCommand extends GenericCommand {
       userPermissions: ["ManageMessages"],
       ownerOnly: false,
       emoji: "🧹",
+      premiumCommand: false,
     });
   }
 

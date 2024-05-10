@@ -16,7 +16,7 @@ class SharesAPI {
     this.client = client;
   }
 
-  public create(req: CreateShares): Promise<void> {
+  public create(req: CreateShares): Promise<Shares | string> {
     return new Promise<Shares | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -28,7 +28,7 @@ class SharesAPI {
     });
   }
 
-  public get(req: GetShares): Promise<void> {
+  public get(req: GetShares): Promise<Shares | string> {
     return new Promise<Shares | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -40,7 +40,7 @@ class SharesAPI {
     });
   }
 
-  public delete(req: DeleteShares): Promise<void> {
+  public delete(req: DeleteShares): Promise<Shares | string> {
     return new Promise<Shares | any>((resolve, reject) => {
       axios({
         method: "DELETE",
@@ -52,7 +52,7 @@ class SharesAPI {
     });
   }
 
-  public updateInfo(req: UpdateSharesInfo): Promise<void> {
+  public updateInfo(req: UpdateSharesInfo): Promise<Shares | string> {
     return new Promise<Shares | any>((resolve, reject) => {
       axios({
         method: "PUT",

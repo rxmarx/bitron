@@ -24,6 +24,8 @@ class GiphySlashCommand extends SlashCommand {
           .setRequired(true)
       ),
       emoji: "🤣",
+      premiumCommand: true,
+      cost: 1500,
     });
   }
 

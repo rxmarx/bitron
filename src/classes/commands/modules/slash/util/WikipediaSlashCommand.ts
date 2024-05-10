@@ -24,6 +24,7 @@ class WikipediaSlashCommand extends SlashCommand {
           .setRequired(true)
       ),
       emoji: "🌐",
+      premiumCommand: false,
     });
   }
 

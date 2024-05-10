@@ -23,7 +23,7 @@ import express, { Application } from "express";
 import Caller from "./caller/Caller";
 import ExtendedClient from "../src/classes/ExtendedClient";
 import { PrismaClient } from "@prisma/client";
-import { Redis } from "ioredis";
+import RedisCache from "./RedisCache";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -33,7 +33,7 @@ class Server {
   private readonly app: Application;
   private readonly PORT = 8000 || process.env.PORT;
   public static database: PrismaClient;
-  public static cache: Redis;
+  public static cache: RedisCache;
   public readonly caller: Caller;
 
   constructor(client: ExtendedClient) {
@@ -42,6 +42,7 @@ class Server {
     this.app = express();
     Server.database = new PrismaClient();
 
+    Server.cache = new RedisCache(Server.client);
     this.caller = new Caller(Server.client);
   }
 

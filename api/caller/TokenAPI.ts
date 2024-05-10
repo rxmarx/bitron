@@ -16,7 +16,7 @@ class TokenAPI {
     this.client = client;
   }
 
-  public create(req: CreateToken): Promise<void> {
+  public create(req: CreateToken): Promise<Token | string> {
     return new Promise<Token | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -28,7 +28,7 @@ class TokenAPI {
     });
   }
 
-  public get(req: GetToken): Promise<void> {
+  public get(req: GetToken): Promise<Token | string> {
     return new Promise<Token | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -40,7 +40,7 @@ class TokenAPI {
     });
   }
 
-  public delete(req: DeleteToken): Promise<void> {
+  public delete(req: DeleteToken): Promise<Token | string> {
     return new Promise<Token | any>((resolve, reject) => {
       axios({
         method: "DELETE",
@@ -52,7 +52,7 @@ class TokenAPI {
     });
   }
 
-  public updateInfo(req: UpdateTokenInfo): Promise<void> {
+  public updateInfo(req: UpdateTokenInfo): Promise<Token | string> {
     return new Promise<Token | any>((resolve, reject) => {
       axios({
         method: "PUT",

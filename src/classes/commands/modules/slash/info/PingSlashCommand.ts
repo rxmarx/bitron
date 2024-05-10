@@ -18,6 +18,7 @@ class PingSlashCommand extends SlashCommand {
       ownerOnly: false,
       dataBuilder: new SlashCommandBuilder(),
       emoji: "🏓",
+      premiumCommand: false,
     });
   }
 

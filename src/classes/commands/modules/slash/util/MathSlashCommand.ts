@@ -25,6 +25,7 @@ class MathSlashCommand extends SlashCommand {
           .setRequired(true)
       ),
       emoji: "➕",
+      premiumCommand: false,
     });
   }
 

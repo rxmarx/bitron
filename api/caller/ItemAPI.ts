@@ -10,7 +10,7 @@ class ItemAPI {
     this.client = client;
   }
 
-  public get(req: GetItem): Promise<void> {
+  public get(req: GetItem): Promise<Item | string> {
     return new Promise<Item | any>((resolve, reject) => {
       axios({
         method: "GET",

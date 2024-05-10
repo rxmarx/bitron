@@ -18,7 +18,7 @@ class BankAPI {
     this.client = client;
   }
 
-  public create(req: CreateBank): Promise<void> {
+  public create(req: CreateBank): Promise<Bank | string> {
     return new Promise<Bank | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -30,7 +30,7 @@ class BankAPI {
     });
   }
 
-  public get(req: GetBank): Promise<void> {
+  public get(req: GetBank): Promise<Bank | string> {
     return new Promise<Bank | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -42,7 +42,7 @@ class BankAPI {
     });
   }
 
-  public delete(req: DeleteBank): Promise<void> {
+  public delete(req: DeleteBank): Promise<Bank | string> {
     return new Promise<Bank | any>((resolve, reject) => {
       axios({
         method: "DELETE",
@@ -54,7 +54,7 @@ class BankAPI {
     });
   }
 
-  public updateInfo(req: UpdateBankInfo): Promise<void> {
+  public updateInfo(req: UpdateBankInfo): Promise<Bank | string> {
     return new Promise<Bank | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -66,7 +66,9 @@ class BankAPI {
     });
   }
 
-  public updateBankStoredTokens(req: UpdateBankStoredTokens): Promise<void> {
+  public updateBankStoredTokens(
+    req: UpdateBankStoredTokens
+  ): Promise<Bank | string> {
     return new Promise<Bank | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -78,7 +80,7 @@ class BankAPI {
     });
   }
 
-  public updateBankShares(req: UpdateBankShares): Promise<void> {
+  public updateBankShares(req: UpdateBankShares): Promise<Bank | string> {
     return new Promise<Bank | any>((resolve, reject) => {
       axios({
         method: "PUT",

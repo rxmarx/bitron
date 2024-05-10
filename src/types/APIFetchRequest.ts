@@ -127,13 +127,12 @@ export type UpdateSharesInfo = {
 };
 
 export type CreatePremiumCommand = {
-  id: number;
   name: string;
   cost?: number;
 };
 
 export type GetPremiumCommand = {
-  id: number;
+  name: string;
 };
 
 export type UpdatePremiumCommandInfo = {

@@ -27,6 +27,7 @@ class ConfigProvider {
   private readonly _botInviteUrl: string | undefined = process.env.BOTINVITEURL;
   private readonly _botProfile: string | undefined = process.env.BOTPROFILE;
   private readonly _cacheUrl: string | undefined = process.env.CACHE_URL;
+  private readonly _cacheToken: string | undefined = process.env.CACHE_TOKEN;
   private readonly _serverApi: string | undefined = process.env.SERVER_API;
   private readonly _serverUrl: string | undefined = process.env.SERVER_URL;
 
@@ -78,6 +79,9 @@ class ConfigProvider {
   }
   public get cacheUrl(): string {
     return this._cacheUrl!;
+  }
+  public get cacheToken(): string {
+    return this._cacheToken!;
   }
   public get serverApi(): string {
     return this._serverApi!;

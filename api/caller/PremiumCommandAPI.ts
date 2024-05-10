@@ -16,7 +16,7 @@ class PremiumCommandAPI {
     this.client = client;
   }
 
-  public create(req: CreatePremiumCommand): Promise<void> {
+  public create(req: CreatePremiumCommand): Promise<PremiumCommand | string> {
     return new Promise<PremiumCommand | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -28,7 +28,7 @@ class PremiumCommandAPI {
     });
   }
 
-  public get(req: GetPremiumCommand): Promise<void> {
+  public get(req: GetPremiumCommand): Promise<PremiumCommand | string> {
     return new Promise<PremiumCommand | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -40,7 +40,9 @@ class PremiumCommandAPI {
     });
   }
 
-  public updateInfo(req: UpdatePremiumCommandInfo): Promise<void> {
+  public updateInfo(
+    req: UpdatePremiumCommandInfo
+  ): Promise<PremiumCommand | string> {
     return new Promise<PremiumCommand | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -52,7 +54,9 @@ class PremiumCommandAPI {
     });
   }
 
-  public connectUser(req: ConnectUserPremiumCommand): Promise<void> {
+  public connectUser(
+    req: ConnectUserPremiumCommand
+  ): Promise<PremiumCommand | string> {
     return new Promise<PremiumCommand | any>((resolve, reject) => {
       axios({
         method: "PUT",

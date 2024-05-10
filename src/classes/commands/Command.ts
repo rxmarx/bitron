@@ -16,6 +16,8 @@ abstract class Command<T extends CommandTrigger> {
   public readonly ownerOnly: boolean;
   public readonly userPermissions: PermissionResolvable[];
   public readonly clientPermissions: PermissionResolvable[];
+  public readonly premiumCommand: boolean;
+  public readonly cost?: number;
 
   constructor(client: ExtendedClient, options: CommandOptions) {
     this.client = client;
@@ -29,6 +31,8 @@ abstract class Command<T extends CommandTrigger> {
     this.ownerOnly = options.ownerOnly;
     this.userPermissions = options.userPermissions;
     this.clientPermissions = options.clientPermissions;
+    this.premiumCommand = options.premiumCommand;
+    this.cost = options.cost;
   }
 
   public abstract hasPermissions(trigger: T): boolean | string;

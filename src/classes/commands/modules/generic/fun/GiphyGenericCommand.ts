@@ -18,6 +18,8 @@ class GiphyGenericCommand extends GenericCommand {
       userPermissions: ["SendMessages", "EmbedLinks"],
       ownerOnly: false,
       emoji: "🤣",
+      premiumCommand: true,
+      cost: 1500,
     });
   }
 
@@ -30,6 +32,7 @@ class GiphyGenericCommand extends GenericCommand {
       message.channel.send({
         embeds: [EmbedProvider.invalid("please enter a keyword to search")],
       });
+      return;
     }
 
     const randomRating =

@@ -9,18 +9,18 @@ class GenericEvents {
     client.config.devChannel.send(`${client.user?.tag} is online! 🟢`);
   }
 
-  public static async guildCreate(guild: Guild, client: ExtendedClient) {
-    client.config.devChannel.send({
-      embeds: [EmbedProvider.guildCreate(guild)],
-    });
-    await client.database.guild.create({
-      data: {
-        id: guild.id,
-        ownerId: guild.ownerId,
-        prefix: "$",
-      },
-    });
-  }
+  // public static async guildCreate(guild: Guild, client: ExtendedClient) {
+  //   client.config.devChannel.send({
+  //     embeds: [EmbedProvider.guildCreate(guild)],
+  //   });
+  //   await client.database.guild.create({
+  //     data: {
+  //       id: guild.id,
+  //       ownerId: guild.ownerId,
+  //       prefix: "$",
+  //     },
+  //   });
+  // }
 }
 
 export default GenericEvents;
