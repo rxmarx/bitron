@@ -15,7 +15,16 @@ export default async function updateTokenInfo(
     return;
   }
 
-  if (!body.level && !body.sales && !body.price && !body.salesPerUpgrade) {
+  if (
+    !body.incLevel &&
+    !body.decLevel &&
+    !body.incSales &&
+    !body.decSales &&
+    !body.incPrice &&
+    !body.decPrice &&
+    !body.incSalesPerUpgrade &&
+    !body.decSalesPerUpgrade
+  ) {
     res
       .send(
         "Invalid request!, token level/sales/price/salesPerUpgrade is missing"
@@ -25,10 +34,14 @@ export default async function updateTokenInfo(
   }
 
   if (
-    body.level == undefined &&
-    body.sales == undefined &&
-    body.price == undefined &&
-    body.salesPerUpgrade == undefined
+    body.incLevel === undefined &&
+    body.decLevel === undefined &&
+    body.incSales === undefined &&
+    body.decSales === undefined &&
+    body.incPrice === undefined &&
+    body.decPrice === undefined &&
+    body.incSalesPerUpgrade === undefined &&
+    body.decSalesPerUpgrade === undefined
   ) {
     res
       .send(
@@ -49,24 +62,85 @@ export default async function updateTokenInfo(
     return;
   }
 
-  const token = await Server.database.token.update({
-    where: {
-      id: body.uuid,
-    },
-    data: {
-      level: body.level || reqToken.level,
-      sales: body.sales || reqToken.sales,
-      price: body.price || reqToken.price,
-      salesPerUpgrade: body.salesPerUpgrade || reqToken.salesPerUpgrade,
-    },
-    include: {
-      creator: true,
-      acquirer: true,
-      buyers: true,
-      bank: true,
-    },
-  });
+  if (body.incLevel || body.decLevel) {
+    const token = await Server.database.token.update({
+      where: {
+        id: body.uuid,
+      },
+      data: {
+        level: body.incLevel
+          ? { increment: body.incLevel }
+          : { decrement: body.decLevel },
+      },
+      include: {
+        creator: true,
+        acquirer: true,
+        buyers: true,
+        bank: true,
+      },
+    });
 
-  res.json(token).status(200);
-  return;
+    res.json(token).status(200);
+    return;
+  } else if (body.incSales || body.decSales) {
+    const token = await Server.database.token.update({
+      where: {
+        id: body.uuid,
+      },
+      data: {
+        sales: body.incSales
+          ? { increment: body.incSales }
+          : { decrement: body.decSales },
+      },
+      include: {
+        creator: true,
+        acquirer: true,
+        buyers: true,
+        bank: true,
+      },
+    });
+
+    res.json(token).status(200);
+    return;
+  } else if (body.incPrice || body.decPrice) {
+    const token = await Server.database.token.update({
+      where: {
+        id: body.uuid,
+      },
+      data: {
+        price: body.incPrice
+          ? { increment: body.incPrice }
+          : { decrement: body.decPrice },
+      },
+      include: {
+        creator: true,
+        acquirer: true,
+        buyers: true,
+        bank: true,
+      },
+    });
+
+    res.json(token).status(200);
+    return;
+  } else if (body.incSalesPerUpgrade || body.decSalesPerUpgrade) {
+    const token = await Server.database.token.update({
+      where: {
+        id: body.uuid,
+      },
+      data: {
+        salesPerUpgrade: body.incSalesPerUpgrade
+          ? { increment: body.incSalesPerUpgrade }
+          : { decrement: body.decSalesPerUpgrade },
+      },
+      include: {
+        creator: true,
+        acquirer: true,
+        buyers: true,
+        bank: true,
+      },
+    });
+
+    res.json(token).status(200);
+    return;
+  }
 }

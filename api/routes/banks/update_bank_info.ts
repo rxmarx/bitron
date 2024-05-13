@@ -15,12 +15,16 @@ export default async function updateBankInfo(
     return;
   }
 
-  if (!body.level && !body.deposit) {
+  if (!body.level && !body.deposit && !body.withdraw) {
     res.send("Invalid request!, bank level/deposit is missing").status(400);
     return;
   }
 
-  if (body.level == undefined && body.deposit == undefined) {
+  if (
+    body.level == undefined &&
+    body.deposit == undefined &&
+    body.withdraw === undefined
+  ) {
     res.send("Invalid request!, bank level/deposit is missing").status(400);
     return;
   }
@@ -41,8 +45,12 @@ export default async function updateBankInfo(
       id: body.id,
     },
     data: {
-      level: body.level || reqBank.level,
-      deposit: body.deposit || reqBank.deposit,
+      deposit: body.deposit ? { increment: body.deposit } : body.withdraw,
+    },
+    include: {
+      shares: true,
+      storedTokens: true,
+      user: true,
     },
   });
 

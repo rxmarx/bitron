@@ -29,7 +29,7 @@ export default async function updateUserInfo(
     return;
   }
 
-  if (!body.bits && !body.commandsRan && !body.job) {
+  if (!body.incBits && !body.decBits && !body.commandsRan && !body.job) {
     res
       .send("Invalid request!, user bits/commandsRan/job is missing")
       .status(400);
@@ -37,7 +37,8 @@ export default async function updateUserInfo(
   }
 
   if (
-    body.bits == undefined &&
+    body.incBits == undefined &&
+    body.decBits &&
     body.commandsRan == undefined &&
     body.job == undefined
   ) {
@@ -63,27 +64,62 @@ export default async function updateUserInfo(
     return;
   }
 
-  const user = await Server.database.user.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      bits: body.bits || reqUser.bits,
-      commandsRan: body.commandsRan || reqUser.commandsRan,
-      job: body.job || reqUser.job,
-    },
-    include: {
-      bank: true,
-      company: true,
-      boughtItems: true,
-      createdTokens: true,
-      partneredCompanies: true,
-      premiumCommands: true,
-      purchasedTokens: true,
-      shares: true,
-    },
-  });
+  if (body.incBits) {
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        bits: { increment: body.incBits },
+        commandsRan:
+          body.commandsRan === undefined
+            ? reqUser.commandsRan
+            : { increment: body.commandsRan },
+        job: body.job || reqUser.job,
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
 
-  res.json(user);
-  return;
+    res.json(user);
+    return;
+  } else {
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        bits:
+          body.decBits === undefined
+            ? reqUser.bits
+            : { decrement: body.decBits },
+        commandsRan:
+          body.commandsRan === undefined
+            ? reqUser.commandsRan
+            : { increment: body.commandsRan },
+        job: body.job || reqUser.job,
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    res.json(user);
+    return;
+  }
 }

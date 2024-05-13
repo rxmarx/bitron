@@ -42,19 +42,95 @@ export default async function updateUserShares(
     return;
   }
 
-  const user = await Server.database.user.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      shares: {
-        connect: {
-          id: body.sharesId,
+  if (body.connect) {
+    const _reqUser = await Server.database.user.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          shares: {
+            some: {
+              id: body.sharesId,
+            },
+          },
         },
       },
-    },
-  });
+    });
 
-  res.json(user);
-  return;
+    if (_reqUser) {
+      res
+        .send("Invalid request!, the user already owns the shares")
+        .status(403);
+      return;
+    }
+
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        shares: {
+          connect: {
+            id: body.sharesId,
+          },
+        },
+      },
+    });
+
+    res.json(user);
+    return;
+  } else {
+    const _reqUser = await Server.database.user.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          shares: {
+            some: {
+              id: body.sharesId,
+            },
+          },
+        },
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    if (!_reqUser) {
+      res.send("Invalid request!, the user doesn't own the shares").status(403);
+      return;
+    }
+
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        shares: {
+          disconnect: {
+            id: body.sharesId,
+          },
+        },
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    res.json(user);
+    return;
+  }
 }

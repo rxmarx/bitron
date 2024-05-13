@@ -42,19 +42,75 @@ export default async function updateBankShares(
     return;
   }
 
-  const bank = await Server.database.bank.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      shares: {
-        connect: {
-          id: body.sharesId,
+  if (body.connect) {
+    const _reqBank = await Server.database.bank.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          shares: {
+            some: {
+              id: body.sharesId,
+            },
+          },
         },
       },
-    },
-  });
+    });
 
-  res.json(bank);
-  return;
+    if (_reqBank) {
+      res.send("Invalid request!, the bank already has the shares").status(403);
+      return;
+    }
+
+    const bank = await Server.database.bank.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        shares: {
+          connect: {
+            id: body.sharesId,
+          },
+        },
+      },
+    });
+
+    res.json(bank);
+    return;
+  } else {
+    const _reqBank = await Server.database.bank.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          shares: {
+            some: {
+              id: body.sharesId,
+            },
+          },
+        },
+      },
+    });
+
+    if (!_reqBank) {
+      res
+        .send("Invalid request!, the bank doesn't have the shares")
+        .status(403);
+      return;
+    }
+
+    const bank = await Server.database.bank.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        shares: {
+          disconnect: {
+            id: body.sharesId,
+          },
+        },
+      },
+    });
+
+    res.json(bank);
+    return;
+  }
 }

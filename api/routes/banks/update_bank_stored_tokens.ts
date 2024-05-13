@@ -42,19 +42,87 @@ export default async function updateBankStoredTokens(
     return;
   }
 
-  const bank = await Server.database.bank.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      storedTokens: {
-        connect: {
-          id: body.tokenUUID,
+  if (body.connect) {
+    const _reqBank = await Server.database.bank.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          storedTokens: {
+            some: {
+              id: body.tokenUUID,
+            },
+          },
         },
       },
-    },
-  });
+    });
 
-  res.json(bank);
-  return;
+    if (_reqBank) {
+      res
+        .send("Invalid request!, the bank already stores this token")
+        .status(403);
+      return;
+    }
+
+    const bank = await Server.database.bank.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        storedTokens: {
+          connect: {
+            id: body.tokenUUID,
+          },
+        },
+      },
+      include: {
+        storedTokens: true,
+        shares: true,
+        user: true,
+      },
+    });
+
+    res.json(bank);
+    return;
+  } else {
+    const _reqBank = await Server.database.bank.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          storedTokens: {
+            some: {
+              id: body.tokenUUID,
+            },
+          },
+        },
+      },
+    });
+
+    if (!_reqBank) {
+      res
+        .send("Invalid request!, the bank doesn't store this token")
+        .status(403);
+      return;
+    }
+
+    const bank = await Server.database.bank.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        storedTokens: {
+          disconnect: {
+            id: body.tokenUUID,
+          },
+        },
+      },
+      include: {
+        storedTokens: true,
+        shares: true,
+        user: true,
+      },
+    });
+
+    res.json(bank);
+    return;
+  }
 }

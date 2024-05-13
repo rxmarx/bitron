@@ -15,12 +15,17 @@ export default async function updateSharesInfo(
     return;
   }
 
-  if (!body.count && !body.value) {
+  if (!body.incCount && !body.decCount && !body.incValue && !body.decValue) {
     res.send("Invalid request!, shares count/value is missing").status(400);
     return;
   }
 
-  if (body.count == undefined && body.value == undefined) {
+  if (
+    body.incCount === undefined &&
+    body.decCount === undefined &&
+    body.incValue === undefined &&
+    body.decValue === undefined
+  ) {
     res.send("Invalid request!, shares count/value is missing").status(400);
     return;
   }
@@ -36,16 +41,43 @@ export default async function updateSharesInfo(
     return;
   }
 
-  const shares = await Server.database.shares.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      count: body.count || reqShares.count,
-      value: body.value || reqShares.value,
-    },
-  });
+  if (body.incCount || body.decCount) {
+    const shares = await Server.database.shares.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        count: body.incCount
+          ? { increment: body.incCount }
+          : { decrement: body.decCount },
+      },
+      include: {
+        bank: true,
+        company: true,
+        holders: true,
+      },
+    });
 
-  res.json(shares);
-  return;
+    res.json(shares);
+    return;
+  } else if (body.incValue || body.decValue) {
+    const shares = await Server.database.shares.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        value: body.incValue
+          ? { increment: body.incValue }
+          : { decrement: body.decValue },
+      },
+      include: {
+        bank: true,
+        company: true,
+        holders: true,
+      },
+    });
+
+    res.json(shares);
+    return;
+  }
 }

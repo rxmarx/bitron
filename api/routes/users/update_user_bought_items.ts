@@ -42,19 +42,75 @@ export default async function updateUserBoughtItems(
     return;
   }
 
-  const user = await Server.database.user.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      boughtItems: {
-        connect: {
-          id: body.itemId,
+  if (body.connect) {
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        boughtItems: {
+          connect: {
+            id: body.itemId,
+          },
         },
       },
-    },
-  });
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
 
-  res.json(user);
-  return;
+    res.json(user);
+    return;
+  } else {
+    const _reqUser = await Server.database.user.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          boughtItems: {
+            some: {
+              id: body.itemId,
+            },
+          },
+        },
+      },
+    });
+
+    if (!_reqUser) {
+      res.send("Invalid request!, the user doesn't own this item").status(403);
+      return;
+    }
+
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        boughtItems: {
+          disconnect: {
+            id: body.itemId,
+          },
+        },
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    res.json(user);
+    return;
+  }
 }

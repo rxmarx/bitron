@@ -42,19 +42,97 @@ export default async function updateUserPartneredCompanies(
     return;
   }
 
-  const user = await Server.database.user.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      partneredCompanies: {
-        connect: {
-          id: body.companyId,
+  if (body.connect) {
+    const _reqUser = await Server.database.user.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          partneredCompanies: {
+            some: {
+              id: body.companyId,
+            },
+          },
         },
       },
-    },
-  });
+    });
 
-  res.json(user);
-  return;
+    if (_reqUser) {
+      res
+        .send("Invalid request!, the user is a partner of the company")
+        .status(403);
+      return;
+    }
+
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        partneredCompanies: {
+          connect: {
+            id: body.companyId,
+          },
+        },
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    res.json(user);
+    return;
+  } else {
+    const _reqUser = await Server.database.user.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          partneredCompanies: {
+            some: {
+              id: body.companyId,
+            },
+          },
+        },
+      },
+    });
+
+    if (!_reqUser) {
+      res
+        .send("Invalid request!, the user isn't a partner of the company")
+        .status(403);
+      return;
+    }
+
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        partneredCompanies: {
+          disconnect: {
+            id: body.companyId,
+          },
+        },
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    res.json(user);
+    return;
+  }
 }

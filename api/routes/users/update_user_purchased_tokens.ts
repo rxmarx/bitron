@@ -42,19 +42,95 @@ export default async function updateUserPurchasedTokens(
     return;
   }
 
-  const user = await Server.database.user.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      purchasedTokens: {
-        connect: {
-          id: body.tokenUUID,
+  if (body.connect) {
+    const _reqUser = await Server.database.user.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          purchasedTokens: {
+            some: {
+              id: body.tokenUUID,
+            },
+          },
         },
       },
-    },
-  });
+    });
 
-  res.json(user);
-  return;
+    if (_reqUser) {
+      res
+        .send("Invalid request!, the user already owns this token")
+        .status(403);
+      return;
+    }
+
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        purchasedTokens: {
+          connect: {
+            id: body.tokenUUID,
+          },
+        },
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    res.json(user);
+    return;
+  } else {
+    const _reqUser = await Server.database.user.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          purchasedTokens: {
+            some: {
+              id: body.tokenUUID,
+            },
+          },
+        },
+      },
+    });
+
+    if (!_reqUser) {
+      res.send("Invalid request!, the user doesn't own this token").status(403);
+      return;
+    }
+
+    const user = await Server.database.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        purchasedTokens: {
+          disconnect: {
+            id: body.tokenUUID,
+          },
+        },
+      },
+      include: {
+        bank: true,
+        company: true,
+        boughtItems: true,
+        createdTokens: true,
+        partneredCompanies: true,
+        premiumCommands: true,
+        purchasedTokens: true,
+        shares: true,
+      },
+    });
+
+    res.json(user);
+    return;
+  }
 }

@@ -15,7 +15,8 @@ export type GetUser = {
 
 export type UpdateUserInfo = {
   id: string;
-  bits?: number;
+  incBits?: number;
+  decBits?: number;
   commandsRan?: number;
   job?: Job;
 };
@@ -23,21 +24,25 @@ export type UpdateUserInfo = {
 export type UpdateUserPartneredCompanies = {
   id: string;
   companyId: string;
+  connect: boolean;
 };
 
 export type UpdateUserPurchasedTokens = {
   id: string;
   tokenUUID: string;
+  connect: boolean;
 };
 
 export type UpdateUserShares = {
   id: string;
   sharesId: number;
+  connect: boolean;
 };
 
 export type UpdateUserBoughtItems = {
   id: string;
   itemId: number;
+  connect: boolean;
 };
 
 export type CreateBank = {
@@ -56,16 +61,19 @@ export type UpdateBankInfo = {
   id: string;
   level?: number;
   deposit?: number;
+  withdraw?: number;
 };
 
 export type UpdateBankShares = {
   id: string;
   sharesId: number;
+  connect: boolean;
 };
 
 export type UpdateBankStoredTokens = {
   id: string;
   tokenUUID: string;
+  connect: boolean;
 };
 
 export type CreateToken = {
@@ -85,10 +93,14 @@ export type GetToken = {
 
 export type UpdateTokenInfo = {
   uuid: string;
-  level?: number;
-  sales?: number;
-  price?: number;
-  salesPerUpgrade?: number;
+  incLevel?: number;
+  decLevel?: number;
+  incSales?: number;
+  decSales?: number;
+  incPrice?: number;
+  decPrice?: number;
+  incSalesPerUpgrade?: number;
+  decSalesPerUpgrade?: number;
 };
 
 export type CreateCompany = {
@@ -106,6 +118,7 @@ export type GetCompany = {
 export type UpdateCompanyAcquiredTokens = {
   id: string;
   tokenUUID: string;
+  connect: boolean;
 };
 
 export type CreateShares = {
@@ -122,8 +135,10 @@ export type GetShares = {
 
 export type UpdateSharesInfo = {
   id: number;
-  count?: number;
-  value?: number;
+  incCount?: number;
+  decCount?: number;
+  incValue?: number;
+  decValue?: number;
 };
 
 export type CreatePremiumCommand = {

@@ -42,19 +42,77 @@ export default async function updateCompanyAcquiredTokens(
     return;
   }
 
-  const company = await Server.database.company.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      acquiredTokens: {
-        connect: {
-          id: body.tokenUUID,
+  if (body.connect) {
+    const _reqCompany = await Server.database.company.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          acquiredTokens: {
+            some: {
+              id: body.tokenUUID,
+            },
+          },
         },
       },
-    },
-  });
+    });
 
-  res.json(company);
-  return;
+    if (_reqCompany) {
+      res
+        .send("Invalid request!, company already acquired this token")
+        .status(403);
+      return;
+    }
+
+    const company = await Server.database.company.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        acquiredTokens: {
+          connect: {
+            id: body.tokenUUID,
+          },
+        },
+      },
+    });
+
+    res.json(company);
+    return;
+  } else {
+    const _reqCompany = await Server.database.company.findUnique({
+      where: {
+        id: body.id,
+        AND: {
+          acquiredTokens: {
+            some: {
+              id: body.tokenUUID,
+            },
+          },
+        },
+      },
+    });
+
+    if (!_reqCompany) {
+      res
+        .send("Invalid request!, company doesn't acquire this token")
+        .status(403);
+      return;
+    }
+
+    const company = await Server.database.company.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        acquiredTokens: {
+          disconnect: {
+            id: body.tokenUUID,
+          },
+        },
+      },
+    });
+
+    res.json(company);
+    return;
+  }
 }
