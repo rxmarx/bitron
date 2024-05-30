@@ -36,9 +36,11 @@ export default async function updateUserInfo(
     return;
   }
 
+  console.log(body.job);
+
   if (
     body.incBits == undefined &&
-    body.decBits &&
+    body.decBits == undefined &&
     body.commandsRan == undefined &&
     body.job == undefined
   ) {
@@ -59,8 +61,11 @@ export default async function updateUserInfo(
     return;
   }
 
-  if (!jobs.includes(body.job!)) {
-    res.send("Invalid request!, user job format is invalid").status(400);
+  if (body.job) {
+    if (!jobs.includes(body.job)) {
+      res.send("Invalid request!, user job format is invalid").status(400);
+      return;
+    }
     return;
   }
 

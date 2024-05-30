@@ -45,7 +45,9 @@ export default async function updateBankInfo(
       id: body.id,
     },
     data: {
-      deposit: body.deposit ? { increment: body.deposit } : body.withdraw,
+      deposit: body.deposit
+        ? { increment: body.deposit }
+        : { decrement: body.withdraw },
     },
     include: {
       shares: true,

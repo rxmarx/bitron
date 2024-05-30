@@ -10,17 +10,43 @@ import {
 } from "../../src/types/APIFetchRequest";
 
 import ExtendedClient from "../../src/classes/ExtendedClient";
+import Server from "..";
 import { User } from "../../src/types/interfaces/schemas";
+import _ from "lodash";
 import axios from "axios";
 
 class UserAPI {
   private readonly client: ExtendedClient;
+  private keyspace: string = `bitron:user`;
 
   constructor(client: ExtendedClient) {
     this.client = client;
   }
 
-  public create(req: CreateUser): Promise<User | string> {
+  public create(
+    req: CreateUser,
+    checkCache?: boolean,
+    expiration?: number
+  ): Promise<User | string> {
+    if (checkCache) {
+      return new Promise<User | any>(async (resolve, reject) => {
+        const user = await this.get({ id: req.id }, false);
+
+        if (!(typeof user === "string")) {
+          reject(await this.create(req, false));
+        }
+
+        const userData = await this.create(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, userData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(userData as User))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -32,7 +58,22 @@ class UserAPI {
     });
   }
 
-  public get(req: GetUser): Promise<User | string> {
+  public get(req: GetUser, checkCache?: boolean): Promise<User | string> {
+    if (checkCache) {
+      return new Promise<User | any>((resolve, reject) => {
+        Server.cache
+          .get<string>(`${this.keyspace}:${req.id}`)
+          .then(async (res) => {
+            if (!res || res.toLowerCase() === "nil") {
+              resolve(await this.get(req, false));
+            } else {
+              resolve(_.toPlainObject(res) as User);
+            }
+          })
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -56,7 +97,30 @@ class UserAPI {
     });
   }
 
-  public updateInfo(req: UpdateUserInfo): Promise<User | string> {
+  public updateInfo(
+    req: UpdateUserInfo,
+    checkCache?: boolean,
+    expiration?: number
+  ): Promise<User | string> {
+    if (checkCache) {
+      return new Promise<User | any>(async (resolve, reject) => {
+        const user = await this.get({ id: req.id }, false);
+
+        if (typeof user === "string") {
+          reject(await this.updateInfo(req, false));
+        }
+
+        const userData = await this.updateInfo(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, userData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(userData as User))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -69,8 +133,29 @@ class UserAPI {
   }
 
   public updatePurchasedTokens(
-    req: UpdateUserPurchasedTokens
+    req: UpdateUserPurchasedTokens,
+    checkCache?: boolean,
+    expiration?: number
   ): Promise<User | string> {
+    if (checkCache) {
+      return new Promise<User | any>(async (resolve, reject) => {
+        const user = await this.get({ id: req.id }, false);
+
+        if (typeof user === "string") {
+          reject(await this.updatePurchasedTokens(req, false));
+        }
+
+        const userData = await this.updatePurchasedTokens(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, userData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(userData as User))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -83,8 +168,29 @@ class UserAPI {
   }
 
   public updatePartneredCompanies(
-    req: UpdateUserPartneredCompanies
+    req: UpdateUserPartneredCompanies,
+    checkCache?: boolean,
+    expiration?: number
   ): Promise<User | string> {
+    if (checkCache) {
+      return new Promise<User | any>(async (resolve, reject) => {
+        const user = await this.get({ id: req.id }, false);
+
+        if (typeof user === "string") {
+          reject(await this.updatePartneredCompanies(req, false));
+        }
+
+        const userData = await this.updatePartneredCompanies(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, userData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(userData as User))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -96,7 +202,30 @@ class UserAPI {
     });
   }
 
-  public updateShares(req: UpdateUserShares): Promise<User | string> {
+  public updateShares(
+    req: UpdateUserShares,
+    checkCache?: boolean,
+    expiration?: number
+  ): Promise<User | string> {
+    if (checkCache) {
+      return new Promise<User | any>(async (resolve, reject) => {
+        const user = await this.get({ id: req.id }, false);
+
+        if (typeof user === "string") {
+          reject(await this.updateShares(req, false));
+        }
+
+        const userData = await this.updateShares(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, userData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(userData as User))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",
@@ -108,7 +237,30 @@ class UserAPI {
     });
   }
 
-  public updateBoughtItems(req: UpdateUserBoughtItems): Promise<User | string> {
+  public updateBoughtItems(
+    req: UpdateUserBoughtItems,
+    checkCache?: boolean,
+    expiration?: number
+  ): Promise<User | string> {
+    if (checkCache) {
+      return new Promise<User | any>(async (resolve, reject) => {
+        const user = await this.get({ id: req.id }, false);
+
+        if (typeof user === "string") {
+          reject(await this.updateBoughtItems(req, false));
+        }
+
+        const userData = await this.updateBoughtItems(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, userData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(userData as User))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<User | any>((resolve, reject) => {
       axios({
         method: "PUT",

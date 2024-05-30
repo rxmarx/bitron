@@ -2,10 +2,10 @@ import { Client } from "discord.js";
 import ConfigProvider from "./client/ConfigProvider";
 import { GatewayIntentBits } from "discord-api-types/v10";
 import MiscExtendedClientEvents from "../types/interfaces/MiscExtendedClientEvents";
-import { PrismaClient } from "@prisma/client";
 import Registry from "./Registry";
 import Server from "../../api";
 import { SlashCommandDeployer } from "./commands/SlashCommandDeployer";
+import { error } from "console";
 
 export declare interface ExtendedClient {
   on<K extends keyof MiscExtendedClientEvents>(
@@ -92,13 +92,6 @@ export class ExtendedClient extends Client {
         this.emit("databaseError", error, this);
       });
     await this.login(this.config.token);
-
-    // this.server.caller.token
-    //   .get({ uuid: "a4f038d6-595f-4ef1-a55b-1ad3384fcbe5" })
-    //   .then((value) => {
-    //     console.log(value);
-    //   })
-    //   .catch((error) => console.log(error));
   }
 
   public async main(): Promise<void> {

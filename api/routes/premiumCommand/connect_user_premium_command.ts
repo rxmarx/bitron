@@ -15,7 +15,7 @@ export default async function connectUserPremiumCommand(
     return;
   }
 
-  if (!body.id || body.id == undefined) {
+  if (!body.name || body.name == "") {
     res.send("Invalid request!, command id is missing").status(400);
     return;
   }
@@ -33,7 +33,7 @@ export default async function connectUserPremiumCommand(
 
   const reqCommand = await Server.database.premiumCommand.findUnique({
     where: {
-      id: body.id,
+      name: body.name,
     },
   });
 
@@ -44,7 +44,7 @@ export default async function connectUserPremiumCommand(
 
   const command = await Server.database.premiumCommand.update({
     where: {
-      id: body.id,
+      name: body.name,
     },
     data: {
       user: {

@@ -88,7 +88,8 @@ export type DeleteToken = {
 };
 
 export type GetToken = {
-  uuid: string;
+  uuid?: string;
+  title?: string;
 };
 
 export type UpdateTokenInfo = {
@@ -122,7 +123,7 @@ export type UpdateCompanyAcquiredTokens = {
 };
 
 export type CreateShares = {
-  id: string;
+  id: number;
 };
 
 export type DeleteShares = {
@@ -151,12 +152,12 @@ export type GetPremiumCommand = {
 };
 
 export type UpdatePremiumCommandInfo = {
-  id: number;
+  name: string;
   cost: number;
 };
 
 export type ConnectUserPremiumCommand = {
-  id: number;
+  name: string;
   userId: string;
 };
 

@@ -15,17 +15,33 @@ export default async function getToken(
     return;
   }
 
-  const token = await Server.database.token.findUnique({
-    where: {
-      id: body.uuid,
-    },
-    include: {
-      creator: true,
-      acquirer: true,
-      buyers: true,
-      bank: true,
-    },
-  });
+  let token;
+
+  if (body.uuid) {
+    token = await Server.database.token.findUnique({
+      where: {
+        id: body.uuid,
+      },
+      include: {
+        creator: true,
+        acquirer: true,
+        buyers: true,
+        bank: true,
+      },
+    });
+  } else {
+    token = await Server.database.token.findFirst({
+      where: {
+        title: body.title,
+      },
+      include: {
+        creator: true,
+        acquirer: true,
+        buyers: true,
+        bank: true,
+      },
+    });
+  }
 
   if (!token) {
     res.send("Invalid request!, token with id is not found").status(404);

@@ -6,17 +6,43 @@ import {
 } from "../../src/types/APIFetchRequest";
 
 import ExtendedClient from "../../src/classes/ExtendedClient";
+import Server from "..";
 import { Shares } from "../../src/types/interfaces/schemas";
+import _ from "lodash";
 import axios from "axios";
 
 class SharesAPI {
   private readonly client: ExtendedClient;
+  private keyspace = `bitron:shares`;
 
   constructor(client: ExtendedClient) {
     this.client = client;
   }
 
-  public create(req: CreateShares): Promise<Shares | string> {
+  public create(
+    req: CreateShares,
+    checkCache?: boolean,
+    expiration?: number
+  ): Promise<Shares | string> {
+    if (checkCache) {
+      return new Promise<Shares | any>(async (resolve, reject) => {
+        const shares = await this.get({ id: req.id }, false);
+
+        if (!(typeof shares === "string")) {
+          reject(await this.create(req, false));
+        }
+
+        const sharesData = await this.create(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, sharesData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(sharesData as Shares))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<Shares | any>((resolve, reject) => {
       axios({
         method: "POST",
@@ -28,7 +54,22 @@ class SharesAPI {
     });
   }
 
-  public get(req: GetShares): Promise<Shares | string> {
+  public get(req: GetShares, checkCache?: boolean): Promise<Shares | string> {
+    if (checkCache) {
+      return new Promise<Shares | any>((resolve, reject) => {
+        Server.cache
+          .get<string>(`${this.keyspace}:${req.id}`)
+          .then(async (res) => {
+            if (!res || res.toLowerCase() === "nil") {
+              resolve(await this.get(req, false));
+            } else {
+              resolve(_.toPlainObject(res) as Shares);
+            }
+          })
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<Shares | any>((resolve, reject) => {
       axios({
         method: "GET",
@@ -52,7 +93,30 @@ class SharesAPI {
     });
   }
 
-  public updateInfo(req: UpdateSharesInfo): Promise<Shares | string> {
+  public updateInfo(
+    req: UpdateSharesInfo,
+    checkCache?: boolean,
+    expiration?: number
+  ): Promise<Shares | string> {
+    if (checkCache) {
+      return new Promise<Shares | any>(async (resolve, reject) => {
+        const shares = await this.get({ id: req.id }, false);
+
+        if (typeof shares === "string") {
+          reject(await this.updateInfo(req, false));
+        }
+
+        const sharesData = await this.updateInfo(req, false);
+
+        Server.cache
+          .set(`${this.keyspace}:${req.id}`, sharesData, {
+            ex: expiration!,
+          })
+          .then((res) => resolve(sharesData as Shares))
+          .catch((error) => reject(error));
+      });
+    }
+
     return new Promise<Shares | any>((resolve, reject) => {
       axios({
         method: "PUT",

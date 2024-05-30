@@ -10,7 +10,7 @@ export default async function updatePremiumCommandInfo(
 ): Promise<void> {
   const body: UpdatePremiumCommandInfo = req.body;
 
-  if (!body.id || body.id == undefined) {
+  if (!body.name || body.name == undefined) {
     res.send("Invalid request!, command id is missing").status(400);
     return;
   }
@@ -22,7 +22,7 @@ export default async function updatePremiumCommandInfo(
 
   const reqCommand = await Server.database.premiumCommand.findUnique({
     where: {
-      id: body.id,
+      name: body.name,
     },
   });
 
@@ -33,7 +33,7 @@ export default async function updatePremiumCommandInfo(
 
   const command = await Server.database.premiumCommand.update({
     where: {
-      id: body.id,
+      name: body.name,
     },
     data: {
       cost: body.cost,

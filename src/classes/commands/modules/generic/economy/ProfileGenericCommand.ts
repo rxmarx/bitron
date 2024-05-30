@@ -121,6 +121,7 @@ class ProfileGenericCommand extends GenericCommand {
             {
               name: "Info",
               value: `Job: ${user.job === undefined ? "jobless" : user.job}`,
+              inline: true,
             },
             {
               name: "Bank",
@@ -131,10 +132,13 @@ class ProfileGenericCommand extends GenericCommand {
               name: "Commands",
               value: `Total: ${user.commandsRan}\nPremium: ${user.premiumCommands?.length === undefined ? "no command" : user.premiumCommands.length}`,
               inline: true,
-            },
+            }
+          )
+          .addFields(
             {
               name: "Tokens",
               value: `Created: ${user.createdTokens?.length === undefined ? "no tokens" : user.createdTokens.length}\nPurchased: ${user.purchasedTokens?.length === undefined ? "no tokens" : user.purchasedTokens}`,
+              inline: true,
             },
             {
               name: "Company",
@@ -193,6 +197,7 @@ class ProfileGenericCommand extends GenericCommand {
             {
               name: "Info",
               value: `Job: ${user.job === undefined ? "jobless" : user.job}`,
+              inline: true,
             },
             {
               name: "Bank",
@@ -203,10 +208,13 @@ class ProfileGenericCommand extends GenericCommand {
               name: "Commands",
               value: `Total: ${user.commandsRan}\nPremium: ${user.premiumCommands?.length === undefined ? "no command" : user.premiumCommands.length}`,
               inline: true,
-            },
+            }
+          )
+          .addFields(
             {
               name: "Tokens",
               value: `Created: ${user.createdTokens?.length === undefined ? "no tokens" : user.createdTokens.length}\nPurchased: ${user.purchasedTokens?.length === undefined ? "no tokens" : user.purchasedTokens}`,
+              inline: true,
             },
             {
               name: "Company",
