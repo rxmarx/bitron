@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: cockroachdb/cockroach:v23.1.11
+    command: start-single-node --insecure
+    ports:
+      - '26257:26257'
+      - '8080:8080'
+    volumes:
+      - cockroach-data:/cockroach/cockroach-data
+
+  api:
+    build: ./packages/api
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./packages/api/.env
+    depends_on:
+      - db
+
+  client:
+    build: ./packages/client
+    env_file:
+      - ./packages/client/.env
+    depends_on:
+      - db
+
+volumes:
+  cockroach-data:

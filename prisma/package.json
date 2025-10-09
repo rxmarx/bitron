@@ -1,0 +1,12 @@
+{
+  "name": "prisma",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "generate": "yarn prisma generate",
+    "migrate:dev": "yarn prisma migrate dev",
+    "migrate:reset": "yarn prisma migrate reset",
+    "studio": "yarn prisma studio",
+    "push": "yarn prisma db push"
+  }
+}

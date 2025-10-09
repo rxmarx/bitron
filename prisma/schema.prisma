@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String    @id @unique
+  username           String
+  bits               Decimal   @default(0)
+  commandsRan        Int       @default(0)
+  createdAt          DateTime  @default(now())
+  subscription       Tiers     @default(TIER0)
+  company            Company?  @relation(name: "UserToCompany")
+  partneredCompanies Company[] @relation(name: "CompanyToUser")
+  employedIn         Company?  @relation(name: "UserToCompany1", fields: [employedInId], references: [ownerId])
+  employedInId       String?
+  shares             Shares[]  @relation(name: "UserToShares")
+  bank               Bank?     @relation(name: "UserToBank")
+  createdTokens      Token[]   @relation(name: "UserToToken")
+  purchasedTokens    Token[]   @relation(name: "UserToToken1")
+  items              Item[]    @relation(name: "UserToItem")
+  job                Job?
+  timePlayed         Decimal   @default(0)
+  jail               Boolean   @default(false)
+}
+
+model Company {
+  owner          User    @relation(name: "UserToCompany", fields: [ownerId], references: [id])
+  ownerId        String  @id @unique
+  partners       User[]  @relation(name: "CompanyToUser")
+  shares         Shares? @relation(name: "CompanyToShares")
+  employees      User[]  @relation(name: "UserToCompany1")
+  salary         Decimal @default(0)
+  acquiredTokens Token[] @relation(name: "TokenToCompany")
+  hiring         Job[]
+  credibility    Int     @default(100)
+}
+
+model Shares {
+  company Company? @relation(name: "CompanyToShares", fields: [id], references: [ownerId])
+  id      String   @id @unique
+  count   Decimal  @default(0)
+  value   Decimal  @default(0)
+  holders User[]   @relation(name: "UserToShares")
+  bank    Bank[]   @relation(name: "SharesToBank")
+}
+
+model Bank {
+  user    User     @relation(name: "UserToBank", fields: [id], references: [id])
+  id      String   @id @unique
+  points  Int      @default(0)
+  tier    Tiers    @default(TIER0)
+  deposit Decimal  @default(0)
+  tokens  Token[]  @relation(name: "TokenToBank")
+  shares  Shares[] @relation(name: "SharesToBank")
+}
+
+model Token {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String   @db.String(32)
+  description  String   @db.String(128)
+  points       Int      @default(0)
+  tier         Tiers    @default(TIER0)
+  sales        Decimal  @default(0)
+  price        Decimal  @default(0)
+  salesPerTier Decimal  @default(0)
+  creator      User     @relation(name: "UserToToken", fields: [creatorId], references: [id])
+  creatorId    String
+  buyers       User[]   @relation(name: "UserToToken1")
+  acquirer     Company? @relation(name: "TokenToCompany", fields: [acquirerId], references: [ownerId])
+  acquirerId   String?
+  bank         Bank[]   @relation(name: "TokenToBank")
+}
+
+model Item {
+  id          Int       @id @unique @default(sequence())
+  name        String    @db.String(32)
+  description String    @db.String(128)
+  cost        Decimal   @default(0)
+  level       Int       @default(0)
+  category    Category
+  stealable   Boolean   @default(true)
+  users       User[]    @relation(name: "UserToItem")
+  powerUps    PowerUp[] @relation(name: "PowerUpToItem")
+}
+
+model PowerUp {
+  id          Int     @id @unique @default(sequence())
+  name        String  @unique @db.String(32)
+  description String  @db.String(128)
+  multiplier  Decimal @default(1)
+  items       Item[]  @relation(name: "PowerUpToItem")
+}
+
+model Guild {
+  id                String  @id
+  ownerId           String
+  prefix            String? @db.String(2)
+  economy           Boolean @default(true)
+  music             Boolean @default(false)
+  commandsChannelId String?
+  musicChannelId    String?
+  voiceChannelId    String?
+}
+
+enum Job {
+  FARMER
+  TACO_TRUCK_WORKER
+  HOTDOG_TRUCK_WORKER
+  FRIES_TRUCK_WORKER
+  SHAWARMA_TRUCK_WORKER
+  FAST_FOOD_WORKER
+  ORE_MINER
+  MINERAL_MINER
+  GEM_MINER
+  BARTENDER
+  MAGICIAN
+  DELIVERY_DRIVER
+  TAXI_DRIVER
+  TRAIN_GOODS_DRIVER
+  TRUCK_GOODS_DRIVER
+  DISCORD_MOD
+  MECHANIC
+  TEACHER
+  PROFESSOR
+  POLICE
+  YOUTUBER
+  TIKTOKER
+  STREAMER
+  FBI_AGENT
+  SOFTWARE_ENGINEER
+  SOFTWARE_MANAGER
+  GAME_DESIGNERS
+  MOBILE_GAME_DEVELOPER
+  INDIE_GAME_DEVELOPER
+  DATA_ANALYSTS
+  DATA_SCIENTISTS
+  CYBER_SECURITY
+  ETHICAL_HACKER
+  HACKER
+  ARTIST
+  PIANIST
+  GUITARIST
+  RAPPER
+  LAWYER
+  SCIENTIST
+  ASTRONAUT
+  PEDIATRICIAN
+  NEUROSURGEON
+  CARDIOLOGIST
+  BITRON_SHOP_KEEPER
+}
+
+enum Tiers {
+  TIER0
+  TIER1
+  TIER2
+  TIER3
+}
+
+enum Category {
+  COLLECTIBLE
+  POWERUP
+  CHEST
+}
